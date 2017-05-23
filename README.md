@@ -5,6 +5,7 @@ Repository for HW assignments of Stat 133 (Fall 2017)
 - Student name: First Last
 - Github username: usrname
 - Lab: 101
+- GSI: Leia Organa
 
 
 ## Get your own repository
@@ -13,19 +14,23 @@ Get your own copy (clone) of this repository. This means that you will have
 to `git clone` the repository. Do NOT confuse _cloning_ with _forking_ 
 (please do NOT fork this repo).
 
-- In your computer, open the command line
+- In your computer, open the command line.
+- Optional: move to the directory where you will clone this repository.
 - Run the following command (this will clone the repo):
 
 ```bash
 git clone https://github.com/ucb-stat133/stat133-fall-2017.git
 ```
 
-- Customize the `README.md` file with your Name, github username, and lab number.
+- Customize the `README.md` file with your Name, github username, lab number, and GSI name.
+
+
+-----
 
 
 ## Working on a HW assignment
 
-- You should organize most HW with the following file structure:
+- You should organize most HW assignments with the following file structure:
 
 ```
 hw04/
@@ -35,7 +40,7 @@ hw04/
   README.md
 ```
 
-- Use the directory `data/` put the data file(s)
+- Use the directory `data/` to put the data file(s)
 - Use the directory `code/` to put all your `.R` files (e.g. scripts, functions, tests)
 - Use the directory `report/` to put your `.Rmd` file (or slides)
 - Make sure the `README.md` file contains:
