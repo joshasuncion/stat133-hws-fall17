@@ -1,4 +1,4 @@
-# HW03 - Summarizing Variables
+# HW01 - Summarizing Variables
 
 The purpose of this HW is to summarize variables (quantatitative and categorical) graphically and numerically.
 
