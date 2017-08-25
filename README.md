@@ -4,7 +4,7 @@ Repository for HW assignments of Stat 133 (Fall 2017)
 
 - Student name: First Last
 - Github username: usrname
-- Lab: 101
+- Lab section: 101
 - GSI: Leia Organa
 
 
@@ -16,14 +16,25 @@ to `git clone` the repository. Do NOT confuse _cloning_ with _forking_
 
 - In your computer, open the command line.
 - Optional: move to the directory where you will clone this repository.
-- Run the following command (this will clone the repo):
+- Run the following command (this will clone the repo to your working directory):
 
 ```bash
 git clone https://github.com/ucb-stat133/stat133-fall-2017.git
 ```
 
-- Customize the `README.md` file with your Name, github username, lab number, and GSI name.
-
+- Customize the `README.md` file with your Name, github username, lab section, and GSI name.
+- Add the changes to your local repo:
+```bash
+git add README.md
+```
+- Commit the changes:
+```bash
+git commit -m "readme: customize readme file"
+```
+- Push to github:
+```bash
+git push origin master
+```
 
 -----
 
