@@ -7,6 +7,7 @@ Repository for HW assignments of Stat 133 (Fall 2017)
 - Lab section: 101
 - GSI: Leia Organa
 
+-----
 
 ## Get your own repository
 
@@ -37,7 +38,6 @@ git push origin master
 ```
 
 -----
-
 
 ## Working on a HW assignment
 
@@ -71,6 +71,7 @@ As soon as you start working on a HW:
 - Push commits to your github repository
 - Don't wait till the last day/hours/minutes to push to Github
 
+-----
 
 ## Submitting your work
 
