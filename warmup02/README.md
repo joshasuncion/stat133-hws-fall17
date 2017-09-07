@@ -5,7 +5,7 @@ data types: numeric (integer and real), character, logical, and factors.
 
 Due Date: Sep-15, 2017
 
-Modify the content of this file.
+Modify the content of the `README.md` file.
 
 - Special instructions for any user (if necessary)
 - Special instructions for graders (if necessary)
