@@ -6,6 +6,7 @@ Here's the description of the R objects in `nba2017-salary-points.RData`:
 - `player`: name of the player.
 - `team`: team name abbreviation.
 - `position`: player position.
+- `experience`: years of experience.
 - `salary`: salary (in dollars).
 - `points`: total scored points.
 - `points1`: number of free throws, worth 1 point each.
@@ -26,15 +27,16 @@ The values in `points` result from adding all scored points:
 points1 + (2 * points2) + (3 * points3)
 ```
 
-You can think of each object as a variable from a statistics standpoint like so:
+Although each object has its own data type, you can think of each of them as a variable from a statistics standpoint like so:
 
-| Object     | Variable     |
-|:-----------|:-------------|
-| `player`   | categorical  |
-| `team`     | categorical  |
-| `position` | categorical  |
-| `salary`   | quantitative |
-| `points`   | quantitative |
-| `points1`  | quantitative |
-| `points2`  | quantitative |
-| `points3`  | quantitative |
+| Object       | Variable     |
+|:-------------|:-------------|
+| `player`     | categorical  |
+| `team`       | categorical  |
+| `position`   | categorical  |
+| `experience` | quantitative |
+| `salary`     | quantitative |
+| `points`     | quantitative |
+| `points1`    | quantitative |
+| `points2`    | quantitative |
+| `points3`    | quantitative |
