@@ -41,10 +41,17 @@ As the *staple* Filipino food, lumpia can be served all year long. Lumpia is mea
 Quadratic Equation
 ------------------
 
-The [quadratic equation](https://en.wikipedia.org/wiki/Quadratic_equation) is a polynomial equation with the form *a**x*<sup>2</sup> + *b**x* + *c* = 0, where *a*, *b*, and *c* are nonzero coefficients and *x* is the unknown variable.
+The [quadratic equation](https://en.wikipedia.org/wiki/Quadratic_equation) is a polynomial equation with the form
+
+*a**x*<sup>2</sup> + *b**x* + *c* = 0
+
+where *a*, *b*, and *c* are nonzero coefficients and *x* is the unknown variable.
 
 The roots of the quadratic equation, found by solving for *x*, can be obtained by factoring, completing the square, graphing, or by using the quadratic formula, which is given by
-$$x = \\frac{-b \\pm \\sqrt{b^2 - 4ac}}{2a}$$
+
+$$
+x=\\frac{-b\\pm\\sqrt{b^2-4ac}}{2a}
+$$
 
 ------------------------------------------------------------------------
 
