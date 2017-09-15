@@ -2,17 +2,17 @@
 
 Repository for HW assignments of Stat 133 (Fall 2017)
 
-- Student name: First Last
-- Github username: usrname
-- Lab section: 101
-- GSI: Leia Organa
+- Student name: Joshua Asuncion
+- Github username: joshasuncion
+- Lab section: 106
+- GSI: Omid Shams Solari
 
 -----
 
 ## Get your own repository
 
-Get your own copy (clone) of this repository. This means that you will have 
-to `git clone` the repository. Do NOT confuse _cloning_ with _forking_ 
+Get your own copy (clone) of this repository. This means that you will have
+to `git clone` the repository. Do NOT confuse _cloning_ with _forking_
 (please do NOT fork this repo).
 
 - In your computer, open the command line.
@@ -78,5 +78,3 @@ As soon as you start working on a HW:
 You should submit the repository link of each HW to bCourses, providing the commit number that corresponds to the closest time-stamp before the due date.
 
 You can keep working on a HW once its due date has passed. However, we won't grade anything after the due date. Why bother? Because it is good professional practice. And it will help you have a nice portfolio for the course that you could show to the rest of the world (don't underestimate this).
-
-
