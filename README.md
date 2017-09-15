@@ -2,7 +2,7 @@
 
 Repository for HW assignments of Stat 133 (Fall 2017)
 
-- Student name: Joshua Asuncion
+- Student name: Josh Asuncion
 - Github username: joshasuncion
 - Lab section: 106
 - GSI: Omid Shams Solari
