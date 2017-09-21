@@ -1,0 +1,12 @@
+---
+title: "HW 01 - More Vectors"
+author: "Josh Asuncion"
+date: "September 21, 2017"
+output: github_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+## R Markdown
