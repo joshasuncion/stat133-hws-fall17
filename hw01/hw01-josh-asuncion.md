@@ -65,5 +65,34 @@ summary(y_hat)
     ##    Min. 1st Qu.  Median    Mean 3rd Qu.    Max. 
     ##   1.510   2.845   5.206   6.187   8.184  23.398
 
--   The regression equation to obtain `y_hat` is $\\widehat{Y} = b\_0 + b\_1 \* X$ where *b*<sub>0</sub> is the intercept term, *b*<sub>1</sub> is the slope term, and *X* is a predictor variable.
--   The slope coefficient *b*<sub>1</sub>
+-   The regression equation to obtain `y_hat` is $\\widehat{Y}$ = *b*<sub>0</sub> + *b*<sub>1</sub> \* *X* where *b*<sub>0</sub> is the intercept term, *b*<sub>1</sub> is the slope term, and *X* is a predictor variable.
+-   The slope coefficient *b*<sub>1</sub> indicates the direction and steepness of the regression line. *b*<sub>1</sub> equals 0.0085567, which shows that for every additional point, a player on average earns $8556.68 more.
+-   The intercept form *b*<sub>0</sub> indicates where the regression line crosses the y-axis. *b*<sub>0</sub> equals 1.5098856, which shows that on avearage a player with 0 points has a salary of $1.509 million.
+-   The predicted salary for a player that scores:
+    -   0 points: $1.509 million
+    -   100 points: $2.365 million
+    -   500 points: $5.788 million
+    -   1000 points: $10.066 million
+    -   2000 points: $18.623 million
+
+``` r
+score0 <- intercept + slope * 0
+score100 <- intercept + slope * 100
+score500 <- intercept + slope * 500
+score1000 <- intercept + slope * 1000
+score2000 <- intercept + slope * 2000
+```
+
+### 5) Plotting the regression line
+
+``` r
+plot(points, salary_millions, abline(a = intercept, b = slope, lwd = 2, col = 'red'), xlab = 'Points', ylab = 'Salary (in millions)', main = 'Regression and lowess lines')
+
+lines(lowess(points, salary_millions), col = 'blue')
+
+text(c(2000, 2000), c(13, 28), labels = c('regression', 'lowess'))
+```
+
+![](hw01-josh-asuncion_files/figure-markdown_github-ascii_identifiers/unnamed-chunk-7-1.png)
+
+### 6) Regression residuals and Coefficient of Determination *R*<sup>2</sup>

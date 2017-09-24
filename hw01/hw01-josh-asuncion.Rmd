@@ -31,7 +31,7 @@ table(position_factor)
 ### 2) Scatterplot of Points and Salary
 
 ```{r}
-plot(points, salary_millions, col='blue', cex.lab=1.5)
+plot(points, salary_millions, col='red', cex.lab=1.25, main = 'Scatterplot of Points and Salary', xlab = 'Points', ylab = 'Salary (in millions)')
 ```
 
 The scatterplot shows a pattern between `points` and `salary`. The general pattern is that as the number of points increases, the salary increases. Another pattern is that the majority of the data points are clustered in the 0-500 point range and 0-5 salary range.
@@ -61,6 +61,74 @@ y_hat <- intercept + slope * x
 summary(y_hat)
 ```
 
-* The regression equation to obtain `y_hat` is $\widehat{Y} = b_0 + b_1 * X$ where $b_0$ is the intercept term, $b_1$ is the slope term, and $X$ is a predictor variable.
-* The slope coefficient $b_1$ 
+* The regression equation to obtain `y_hat` is $\widehat{Y}$ = $b_0 + b_1 * X$ where $b_0$ is the intercept term, $b_1$ is the slope term, and $X$ is a predictor variable.
+* The slope coefficient $b_1$ indicates the direction and steepness of the regression line. $b_1$ equals `r slope`, which shows that for every additional point, a player on average earns $8556.68 more.
+* The intercept form $b_0$ indicates where the regression line crosses the y-axis. $b_0$ equals `r intercept`, which shows that on avearage a player with 0 points has a salary of $1.509 million.
+* The predicted salary for a player that scores:
+    * 0 points: $1.509 million
+    * 100 points: $2.365 million
+    * 500 points: $5.788 million
+    * 1000 points: $10.066 million
+    * 2000 points: $18.623 million
+
+```{r}
+score0 <- intercept + slope * 0
+score100 <- intercept + slope * 100
+score500 <- intercept + slope * 500
+score1000 <- intercept + slope * 1000
+score2000 <- intercept + slope * 2000
+```
+
+### 5) Plotting the regression line
+
+```{r}
+plot(points, salary_millions, abline(a = intercept, b = slope, lwd = 2, col = 'red'), xlab = 'Points', ylab = 'Salary (in millions)', main = 'Regression and lowess lines')
+
+lines(lowess(points, salary_millions), col = 'blue')
+
+text(c(2000, 2000), c(13, 28), labels = c('regression', 'lowess'))
+```
+
+### 6) Regression residuals and Coefficient of Determination $R^2$
+
+```{r}
+residual <- y - y_hat
+summary(residual)
+```
+
+```{r}
+rss <- sum(residual ** 2)
+rss
+```
+
+```{r}
+tss <- sum((y - mean_y) ** 2)
+tss
+```
+
+```{r}
+r_squared <- 1 - (rss / tss)
+r_squared
+```
+
+### 7) Exploring Position and Experience
+
+```{r}
+plot(exp_without_r, salary_millions, main = 'Scatterplot with lowess smooth', xlab = 'Years of Experience', ylab = 'Salary (in millions)')
+
+lines(lowess(exp_without_r, salary_millions), col = 'red')
+```
+
+```{r, eval = F}
+install.packages('scatterplot3d')
+library(scatterplot3d)
+```
+
+```{r}
+scatterplot3d(points, exp_without_r, salary_millions)
+```
+
+```{r}
+boxplot(salary_millions ~ position, xlab = 'Position', ylab = 'Salary (in millions)')
+```
 
