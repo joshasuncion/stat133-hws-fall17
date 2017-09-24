@@ -121,10 +121,10 @@ lines(lowess(exp_without_r, salary_millions), col = 'red')
 
 ```{r, eval = F}
 install.packages('scatterplot3d')
-library(scatterplot3d)
 ```
 
 ```{r}
+library(scatterplot3d)
 scatterplot3d(points, exp_without_r, salary_millions)
 ```
 

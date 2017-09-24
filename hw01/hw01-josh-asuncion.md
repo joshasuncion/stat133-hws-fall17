@@ -30,7 +30,7 @@ table(position_factor)
 ### 2) Scatterplot of Points and Salary
 
 ``` r
-plot(points, salary_millions, col='blue', cex.lab=1.5)
+plot(points, salary_millions, col='red', cex.lab=1.25, main = 'Scatterplot of Points and Salary', xlab = 'Points', ylab = 'Salary (in millions)')
 ```
 
 ![](hw01-josh-asuncion_files/figure-markdown_github-ascii_identifiers/unnamed-chunk-3-1.png)
@@ -96,3 +96,59 @@ text(c(2000, 2000), c(13, 28), labels = c('regression', 'lowess'))
 ![](hw01-josh-asuncion_files/figure-markdown_github-ascii_identifiers/unnamed-chunk-7-1.png)
 
 ### 6) Regression residuals and Coefficient of Determination *R*<sup>2</sup>
+
+``` r
+residual <- y - y_hat
+summary(residual)
+```
+
+    ##    Min. 1st Qu.  Median    Mean 3rd Qu.    Max. 
+    ## -14.190  -2.794  -1.095   0.000   2.555  18.810
+
+``` r
+rss <- sum(residual ** 2)
+rss
+```
+
+    ## [1] 11299.62
+
+``` r
+tss <- sum((y - mean_y) ** 2)
+tss
+```
+
+    ## [1] 19003.48
+
+``` r
+r_squared <- 1 - (rss / tss)
+r_squared
+```
+
+    ## [1] 0.4053923
+
+### 7) Exploring Position and Experience
+
+``` r
+plot(exp_without_r, salary_millions, main = 'Scatterplot with lowess smooth', xlab = 'Years of Experience', ylab = 'Salary (in millions)')
+
+lines(lowess(exp_without_r, salary_millions), col = 'red')
+```
+
+![](hw01-josh-asuncion_files/figure-markdown_github-ascii_identifiers/unnamed-chunk-12-1.png)
+
+``` r
+install.packages('scatterplot3d')
+```
+
+``` r
+library(scatterplot3d)
+scatterplot3d(points, exp_without_r, salary_millions)
+```
+
+![](hw01-josh-asuncion_files/figure-markdown_github-ascii_identifiers/unnamed-chunk-14-1.png)
+
+``` r
+boxplot(salary_millions ~ position, xlab = 'Position', ylab = 'Salary (in millions)')
+```
+
+![](hw01-josh-asuncion_files/figure-markdown_github-ascii_identifiers/unnamed-chunk-15-1.png)
