@@ -68,12 +68,6 @@ summary(y_hat)
 -   The regression equation to obtain `y_hat` is $\\widehat{Y}$ = *b*<sub>0</sub> + *b*<sub>1</sub> \* *X* where *b*<sub>0</sub> is the intercept term, *b*<sub>1</sub> is the slope term, and *X* is a predictor variable.
 -   The slope coefficient *b*<sub>1</sub> indicates the direction and steepness of the regression line. *b*<sub>1</sub> equals 0.0085567, which shows that for every additional point, a player on average earns $8556.68 more.
 -   The intercept form *b*<sub>0</sub> indicates where the regression line crosses the y-axis. *b*<sub>0</sub> equals 1.5098856, which shows that on avearage a player with 0 points has a salary of $1.509 million.
--   The predicted salary for a player that scores:
-    -   0 points: $1.509 million
-    -   100 points: $2.365 million
-    -   500 points: $5.788 million
-    -   1000 points: $10.066 million
-    -   2000 points: $18.623 million
 
 ``` r
 score0 <- intercept + slope * 0
@@ -83,6 +77,13 @@ score1000 <- intercept + slope * 1000
 score2000 <- intercept + slope * 2000
 ```
 
+-   The predicted salary for a player that scores:
+    -   0 points: $1.509 million
+    -   100 points: $2.365 million
+    -   500 points: $5.788 million
+    -   1000 points: $10.066 million
+    -   2000 points: $18.623 million
+
 ### 5) Plotting the regression line
 
 ``` r
@@ -90,7 +91,7 @@ plot(points, salary_millions, abline(a = intercept, b = slope, lwd = 2, col = 'r
 
 lines(lowess(points, salary_millions), col = 'blue')
 
-text(c(2000, 2000), c(13, 28), labels = c('regression', 'lowess'))
+text(c(2000, 2000), c(15, 25), labels = c('regression', 'lowess'))
 ```
 
 ![](hw01-josh-asuncion_files/figure-markdown_github-ascii_identifiers/unnamed-chunk-7-1.png)
@@ -152,3 +153,22 @@ boxplot(salary_millions ~ position, xlab = 'Position', ylab = 'Salary (in millio
 ```
 
 ![](hw01-josh-asuncion_files/figure-markdown_github-ascii_identifiers/unnamed-chunk-15-1.png)
+
+-   The plots each have their own patterns and characteristics.
+    -   The scatterplot with lowess smooth shows a relationship between years of experience and salary. Mainly, it appears to be that players just starting in the league are roughly in the same salary range, making around $0-5 million a year. By year 4, the plot shows that salary varies widely, with some players having jumped to more than $20 million. From 5 to 10 years, players' salaries range widely. From 10 to 15 years, it appears that there are less players with salaries at all, and among the players who do, most salaries fall to $10-15 million and lower. The lowess line shows this trend, starting off at year 0 and near $0 million, then increasing and peaking around year 7, then slowly declining after.
+    -   The 3D scatterplot shows the data being dense in the near left corner of the plot, illustrating how a large of players fall in the range of 0-500 points, $0-5 million salary, and 0-5 years of experience. The majority of players are within 1500 points, $15 million, and 10 years of experience.
+    -   The boxplot shows that centers have the highest third quartile for salary, at around $13 million, as well as the highest maximum that is not an outlier, at around $27 million. Point guards and shooting guards have the lowest mean salary around $3 million, and point guards have the lowest non-outlier maximum salary at $17 million. The plot shows that center is the only position with no outliers. In addition, it illustrates how the mean salary is almost the same in all 5 positions.
+-   The scatterplots seem to show that there is indeed a relationship between experience and salary. Primarily, the less experience a player has, the more likely is his salary to be low. However, past 5 years of experience, the players' salaries vary widely, and experience doesn't seem to be a good indicator of one's salary anymore.
+-   The boxplot seems to imply that position is related with salary. Although all 5 have roughly the same mean salary, centers seem to have the widest variation from minimum to maximum, meaning that more centers have higher salaries than any other position. The plot in fact shows a hierarchy, with centers earning the highest followed by small forward, power forward, shooting guard, and point guard. However, including outliers in the analysis results in small forward being the highest earning position, while the maximum salaries of the other 4 positions become roughly the same.
+
+### 8) Comments and Reflections
+
+I found generating the scatterplots and boxplot to be particularly hard, mainly because I was not familiar with the plotting functions and I didn't know how to implement the different parameters. I found creating the lowess line to be especially hard because I didn't understand how `lines()` and `lowess()` worked, and I struggled for awhile to create the line.
+
+I found sections 3 and 4 to be surprisingly easy, even though I was somewhat intimidated by having to manually compute statistics such as variance, covariance, correlation, slope, and intercept.
+
+To complete the assignment I had to use Google extensively to understand how to use certain functions, as I found R Help to be unclear at times. I used many websites such as [Quick-R](http://www.statmethods.net/graphs/boxplot.html), [R Tutorial](http://www.r-tutor.com/r-introduction/basic-data-types/integer), and [ShareLaTeX](https://www.sharelatex.com/learn/Subscripts_and_superscripts).
+
+It took me many hours to complete this assignment. I didn't feel it was particularly hard overall, but I felt like there was just a large number of sections. Learning to create the plots and lines was probably the most time consuming part.
+
+Creating the lowess line and adding text to the plots were frustrating in particular, mainly because it was hard for me to understand what I was doing wrong. Consequently, I was very proud of being able to figure it out and generate the plots.
