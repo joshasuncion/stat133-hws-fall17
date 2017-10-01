@@ -102,4 +102,3 @@ ggplot(data = players2, aes(x = EFF, y = Salary)) + geom_point() + geom_smooth(m
 ```{r}
 cor(players2$EFF, players2$Salary)
 ```
-
