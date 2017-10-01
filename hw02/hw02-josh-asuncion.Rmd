@@ -1,0 +1,83 @@
+---
+title: "HW 02 - Basics of Data Frames"
+author: "Josh Asuncion"
+date: "September 30, 2017"
+output: github_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+## 2) Import the data in R
+
+```{r}
+dat <- read.csv('nba2017-player-statistics.csv', colClasses = c('character', 'character', 'factor', 'character', 'double', rep('integer', 19)))
+str(dat)
+```
+
+```{r}
+library(readr)
+dat2 <- read_csv('nba2017-player-statistics.csv', col_types = cols(
+  .default = col_integer(),
+  Player = col_character(),
+  Team = col_character(),
+  Experience = col_character(),
+  Position = col_factor(levels = c('C', 'PF', 'PG', 'SF', 'SG')),
+  Salary = col_double()
+  )
+)
+str(dat2)
+```
+
+## 3) Right after importing the data
+
+```{r}
+dat$Experience <- as.integer(gsub('R', '0', dat$Experience))
+```
+
+## 4) Performance of players
+
+```{r}
+dat$Missed_FG <- dat$FGA - dat$FGM
+dat$Missed_FT <- dat$FTA - dat$FTM
+dat$PTS <- (dat$Points3 * 3) + (dat$Points2 * 2) + dat$FTM
+dat$REB <- dat$OREB + dat$DREB
+dat$MPG <- dat$MIN / dat$GP
+dat$EFF <- (dat$PTS + dat$REB + dat$AST + dat$STL + dat$BLK - dat$Missed_FG - dat$Missed_FT - dat$TO) / dat$GP
+
+summary(dat$EFF)
+```
+
+```{r}
+hist(dat$EFF, main = 'Histogram of Efficiency (EFF)', xlab = 'EFF')
+```
+
+```{r}
+head(dat[order(dat$EFF, decreasing = TRUE), c('Player', 'Team', 'Salary', 'EFF')], n = 10)
+```
+
+```{r}
+dat[dat$EFF < 0, 'Player']
+```
+
+```{r}
+correlations <- data.frame(
+  PTS = cor(dat$EFF, dat$PTS),
+  REB = cor(dat$EFF, dat$REB),
+  STL = cor(dat$EFF, dat$STL),
+  AST = cor(dat$EFF, dat$AST),
+  BLK = cor(dat$EFF, dat$BLK),
+  Missed_FT = -cor(dat$EFF, dat$Missed_FT),
+  Missed_FG = -cor(dat$EFF, dat$Missed_FG),
+  TO = -cor(dat$EFF, dat$TO)
+)
+correlations <- correlations[order(correlations$PTS), ]
+correlations
+```
+
+```{r}
+barplot(as.matrix(correlations), main = 'Correlations between Player Stats and EFF', ylim = c(-1,1), cex.names = 0.7)
+```
+
+## 5) Efficiency and Salary
