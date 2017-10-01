@@ -212,9 +212,38 @@ correlations
 
 ``` r
 barplot(as.matrix(correlations), main = 'Correlations between Player Stats and EFF', ylim = c(-1,1), cex.names = 0.7)
+abline(h = 0)
 ```
 
 ![](hw02-josh-asuncion_files/figure-markdown_github-ascii_identifiers/unnamed-chunk-9-1.png)
 
 5) Efficiency and Salary
 ------------------------
+
+``` r
+library(ggplot2)
+ggplot(data = dat, aes(x = EFF, y = Salary)) + geom_point() + geom_smooth(method = loess) + labs(x = 'Efficiency') + ggtitle('Scatterplot of Efficiency and Salary')
+```
+
+![](hw02-josh-asuncion_files/figure-markdown_github-ascii_identifiers/unnamed-chunk-10-1.png)
+
+``` r
+cor(dat$EFF, dat$Salary)
+```
+
+    ## [1] 0.655624
+
+Based on both the scatterplot of efficiency and salary and on the correlation coefficient between them, it is reasonable to conclude that there exists a positive relationship between efficiency and salary. Mainly, they are related such that an increase in efficiency is correlated with an increase in salary. However, despite the clear correlation, it is not clear if one causes the other. An outside factor could be influencing their relationship.
+
+``` r
+players2 <- dat[dat$MPG >= 20, ]
+ggplot(data = players2, aes(x = EFF, y = Salary)) + geom_point() + geom_smooth(method = loess) + labs(x = 'Efficiency') + ggtitle('Scatterplot of Efficiency and Salary')
+```
+
+![](hw02-josh-asuncion_files/figure-markdown_github-ascii_identifiers/unnamed-chunk-12-1.png)
+
+``` r
+cor(players2$EFF, players2$Salary)
+```
+
+    ## [1] 0.5367224

@@ -11,3 +11,7 @@ Modify the content of this file.
 - Special instructions for graders (if necessary)
 - Links to any resources that you used to complete the HW
 - List of references that you used to complete the HW
+
+# Resources
+
+- https://www.r-bloggers.com/how-to-format-your-chart-and-axis-titles-in-ggplot2/
