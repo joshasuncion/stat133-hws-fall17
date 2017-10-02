@@ -14,4 +14,7 @@ Modify the content of this file.
 
 # Resources
 
+- https://blog.rstudio.com/2015/04/09/readr-0-1-0/
+- https://cran.r-project.org/web/packages/readr/README.html
+- https://cran.r-project.org/web/packages/readr/vignettes/readr.html
 - https://www.r-bloggers.com/how-to-format-your-chart-and-axis-titles-in-ggplot2/

@@ -9,16 +9,16 @@ output: github_document
 knitr::opts_chunk$set(echo = TRUE)
 ```
 
-## 2) Import the data in R
+### 2) Import the data in R
 
 ```{r}
-dat <- read.csv('nba2017-player-statistics.csv', colClasses = c('character', 'character', 'factor', 'character', 'double', rep('integer', 19)))
+dat <- read.csv('data/nba2017-player-statistics.csv', colClasses = c('character', 'character', 'factor', 'character', 'double', rep('integer', 19)))
 str(dat)
 ```
 
 ```{r}
 library(readr)
-dat2 <- read_csv('nba2017-player-statistics.csv', col_types = cols(
+dat2 <- read_csv('data/nba2017-player-statistics.csv', col_types = cols(
   .default = col_integer(),
   Player = col_character(),
   Team = col_character(),
@@ -30,13 +30,13 @@ dat2 <- read_csv('nba2017-player-statistics.csv', col_types = cols(
 str(dat2)
 ```
 
-## 3) Right after importing the data
+### 3) Right after importing the data
 
 ```{r}
 dat$Experience <- as.integer(gsub('R', '0', dat$Experience))
 ```
 
-## 4) Performance of players
+### 4) Performance of players
 
 ```{r}
 dat$Missed_FG <- dat$FGA - dat$FGM
@@ -81,7 +81,7 @@ barplot(as.matrix(correlations), main = 'Correlations between Player Stats and E
 abline(h = 0)
 ```
 
-## 5) Efficiency and Salary
+### 5) Efficiency and Salary
 
 ```{r}
 library(ggplot2)
@@ -102,3 +102,15 @@ ggplot(data = players2, aes(x = EFF, y = Salary)) + geom_point() + geom_smooth(m
 ```{r}
 cor(players2$EFF, players2$Salary)
 ```
+
+The relationship between efficiency and salary when only accounting for the more established players is still positive, meaning as efficiency goes up, salary goes up. However, the correlation coefficient is actually smaller than the coefficient when taking into account all players. This is evidenced by the scatterplot, where the data in `players2` is more spread out vertically, causing the loess line to have a less inclined slope. It is reasonable to say that they have a weaker relationship.
+
+### 6) Comments and Reflections
+
+Importing the data was hard, because I didn't have much experience with using either `read.csv` or `read_csv`. I found it was especially difficult using `read_csv` because I couldn't figure out how to change column types.
+
+I found manipulating data frames in Question 4 and 5 to be pretty easy. In addition, I found creating the plots to be less difficult than I thought it would be.
+
+I needed to look at outside resources to figure out how to use `read_csv` and `col_types`, such as the [R Studio blog](https://blog.rstudio.com/2015/04/09/readr-0-1-0/) and the [CRAN website](https://cran.r-project.org/web/packages/readr/README.html). To edit the labels and the titles for the plots using `ggplot`, I needed to use the [R-bloggers website](https://www.r-bloggers.com/how-to-format-your-chart-and-axis-titles-in-ggplot2/).
+
+In all, I spent a few hours on this assignment. I found this homework to be less time consuming than the previous assignment. I had a few problems, such as using `read_csv`, and getting the labels when using `ggplot` to display correctly. However, by the end I was able to fully understand. I felt proud of figuring out how to use the different functions in the `ggplot` library.

@@ -5,7 +5,7 @@ The data includes the statistics of each active NBA player during the 2016-2017 
 Source:
 www.basketball-reference.com
 
-Sample data source (team = Golden State Warriors):
+Sample data source (Golden State Warriors):
 https://www.basketball-reference.com/teams/GSW/2017.html
 
 # Description of Variables
