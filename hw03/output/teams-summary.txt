@@ -8,7 +8,7 @@
      salary          points3      
  Min.   : 55.78   Min.   : 513.0  
  1st Qu.: 84.59   1st Qu.: 617.0  
- Median : 91.40   Median : 704.0  
+ Median : 91.41   Median : 704.0  
  Mean   : 90.95   Mean   : 730.7  
  3rd Qu.:101.87   3rd Qu.: 805.8  
  Max.   :125.79   Max.   :1141.0  

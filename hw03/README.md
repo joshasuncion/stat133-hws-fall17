@@ -15,3 +15,5 @@ Modify the content of this file.
 - https://stackoverflow.com/questions/10941225/horizontal-barplot-in-ggplot2
 - http://ggplot2.tidyverse.org/reference/labs.html
 - https://stackoverflow.com/questions/14794599/how-the-change-line-width-in-ggplot
+- https://stackoverflow.com/questions/29599724/how-to-escape-in-r-markdown-and-slidify-it
+- http://ggplot2.tidyverse.org/reference/geom_abline.html

@@ -25,8 +25,8 @@ sink()
 roster_stats = merge(roster, stats)
 
 teams <- summarize(group_by(roster_stats, team),
-                   experience = sum(experience),
-                   salary = sum(salary) / 1000000,
+                   experience = round(sum(experience), 2),
+                   salary = round(sum(salary) / 1000000, 2),
                    points3 = sum(points3_made),
                    points2 = sum(points2_made),
                    free_throws = sum(points1_made),
