@@ -54,10 +54,11 @@ The data I will be working with is in the `nba2017-teams.csv` file generated fro
 Import the dataset using `read.csv()`.
 
 ``` r
-data <- read.csv("../data/nba2017-teams.csv", stringsAsFactors = FALSE)
 # set stringsAsFactors = FALSE to keep team names as characters
-data <- data[-1]
+data <- read.csv("../data/nba2017-teams.csv", stringsAsFactors = FALSE)
 # remove unnecessary first column which contains integers from 1 to 30
+data <- data[-1]
+# show first 5 rows of data
 head(data, n = 5)
 ```
 
@@ -74,10 +75,6 @@ head(data, n = 5)
     ## 4         2416    1746    605    339       952  1275   139.1025
     ## 5         2636    1805    550    320       827  1198   145.2994
 
-``` r
-# show first 5 rows of data
-```
-
 ### Comparing Teams by `points3`
 
 A matrix will have to be properly formatted in order to work with `ggnet2`. One way in which the data can be arranged is with an edge list.
@@ -89,8 +86,8 @@ An edge list is a two-column matrix where the data points in the source column a
 Create an empty matrix `teams` with two empty columns, and give its first column the list of teams in `data`.
 
 ``` r
-teams <- matrix(NA, nrow = 30, ncol = 2)
 # set nrow = 30 for 30 teams and ncol = 2 for source and target columns
+teams <- matrix(NA, nrow = 30, ncol = 2)
 teams[ , 1] <- data[ , 1]
 ```
 
@@ -100,13 +97,14 @@ A caveat includes making sure that we do not compare a source team to itself. An
 
 ``` r
 for (i in 1:30) {
-  test <- data[-i, ]
 # create a test matrix and set it to the dataset of 29 other teams
-  closest <- which.min(abs(data[i, "points3"] - test[ , "points3"]))
+  test <- data[-i, ]
 # find the index of the team that is the closest to the source team in terms of points3
-  teams[i, 2] <- test[closest, 1]
+  closest <- which.min(abs(data[i, "points3"] - test[ , "points3"]))
 # set the target of the source team equal to the closest team
+  teams[i, 2] <- test[closest, 1]
 }
+# show first 10 rows
 head(teams, n = 10)
 ```
 
@@ -122,10 +120,6 @@ head(teams, n = 10)
     ##  [9,] "DET" "ATL"
     ## [10,] "GSW" "BOS"
 
-``` r
-# show first 10 rows
-```
-
 ### Plotting the Connections
 
 After setting a target team for each source team in `teams`, the `network()` function is then needed to convert `teams` into a network to be passed into `ggnet2`.
@@ -134,16 +128,13 @@ Since we are working with an edge list, set the `matrix.type` argument in `netwo
 
 ``` r
 net = network(teams, directed = FALSE, matrix.type="edgelist")
+# set label = TRUE to see label for each node
 ggnet2(net, label = TRUE) + ggtitle("Teams grouped by 3-pointers")
 ```
 
     ## Loading required package: scales
 
 ![](post01-josh-asuncion_files/figure-markdown_github-ascii_identifiers/unnamed-chunk-6-1.png)
-
-``` r
-# set label = TRUE to see label for each node
-```
 
 The resulting network diagram shows how teams are grouped together using `points3`. For instance, the Warriors (GSW), Celtics (BOS), Cavaliers (CLE), and Rockets (HOU) are more similar to each other in terms of 3-pointers than they are with the other teams. Thus, they are grouped together into a class of their own.
 
@@ -167,11 +158,11 @@ Now, we need to create a `division` vector of length 30 which contains the divis
 ``` r
 division <- character(length = 30)
 for (i in 1:30) {
-  if (network.vertex.names(net)[i] %in% atlantic) {
 # network.vertex.names(net) gives you a vector of the teams in net
 # use %in% to see if the team is an element in atlantic
-    division[i] <- "atlantic"
+  if (network.vertex.names(net)[i] %in% atlantic) {
 # assign the ith element in division to atlantic
+    division[i] <- "atlantic"
   } else if (network.vertex.names(net)[i] %in% central) {
     division[i] <- "central"
   } else if (network.vertex.names(net)[i] %in% southeast) {
@@ -195,19 +186,18 @@ Use `set.vertex.attribute()` to give `net` a new attribute through which we can 
 Plot the network diagram, but now set `color = "division"` to color the nodes by division. `ggnet2` will automatically add a legend for division.
 
 ``` r
-set.vertex.attribute(net, "division", division)
 # create a new attribute called "division"
-colors <- c("Set2", "Set3", "Pastel1", "Pastel2")
+set.vertex.attribute(net, "division", division)
 # create a vector of color schemes to choose at random
-ggnet2(net, label = TRUE, color = "division", palette = sample(colors, 1)) + ggtitle("Teams grouped by 3-pointers")
+colors <- c("Set2", "Set3", "Pastel1", "Pastel2")
+# palette chooses the color scheme
+# use sample(colors, 1) to randomly pick a color scheme
+ggnet2(net, label = TRUE,
+       color = "division", palette = sample(colors, 1)
+       ) + ggtitle("Teams grouped by 3-pointers")
 ```
 
 ![](post01-josh-asuncion_files/figure-markdown_github-ascii_identifiers/unnamed-chunk-9-1.png)
-
-``` r
-# palette chooses the color scheme
-# use sample(colors, 1) to randomly pick a color scheme
-```
 
 ### Differentiating by Size and Shape
 
@@ -226,16 +216,16 @@ Create a new attribute called `"value"` to apply onto `net`. This will allow `gg
 
 ``` r
 set.vertex.attribute(net, "value", value)
-ggnet2(net, label = TRUE, color = "division", palette = sample(colors, 1), size = "value", size.cut = TRUE, size.legend = "number of 3-pointers") + ggtitle("Teams grouped by 3-pointers")
-```
-
-![](post01-josh-asuncion_files/figure-markdown_github-ascii_identifiers/unnamed-chunk-11-1.png)
-
-``` r
 # set the size argument to the "value" attribute
 # set size.cut = TRUE to separate node sizes by quartile
 # set size.legend = "number of 3-pointers" to relabel the legend name
+ggnet2(net, label = TRUE,
+       color = "division", palette = sample(colors, 1),
+       size = "value", size.cut = TRUE, size.legend = "number of 3-pointers"
+       ) + ggtitle("Teams grouped by 3-pointers")
 ```
+
+![](post01-josh-asuncion_files/figure-markdown_github-ascii_identifiers/unnamed-chunk-11-1.png)
 
 We can also differentiate nodes in terms of shape. Since we color coded the teams by division, let's assign node shape by the conference each team belongs to.
 
@@ -269,23 +259,25 @@ Give `net` a new attribute called `"conference"`, which we can then pass into `g
 
 ``` r
 set.vertex.attribute(net, "conference", conference)
-ggnet2(net, label = TRUE, color = "division", palette = sample(colors, 1), size = "value", size.cut = TRUE, size.legend = "number of 3-pointers", shape = "conference", shape.palette = c("eastern conference" = 15, "western conference" = 17)) + ggtitle("Teams grouped by 3-pointers")
+# set the shape argument to the "conference" attribute
+# shape.palette chooses the shapes
+ggnet2(net, label = TRUE,
+       color = "division", palette = sample(colors, 1),
+       size = "value", size.cut = TRUE, size.legend = "number of 3-pointers",
+       shape = "conference", shape.palette = c("eastern conference" = 15,
+                                               "western conference" = 17)
+       ) + ggtitle("Teams grouped by 3-pointers")
 ```
 
 ![](post01-josh-asuncion_files/figure-markdown_github-ascii_identifiers/unnamed-chunk-14-1.png)
-
-``` r
-# set the shape argument to the "conference" attribute
-# shape.palette chooses the shapes
-```
 
 ### Creating the Function `group_teams_by()`
 
 Up to now I've worked exclusively with `points3`. It would be much more beneficial to compare the teams with additional statistics, such as salary, free throws, points, and steals. To do so, I will generalize the work we've done by creating the function `group_teams_by()`, which will take in a statistic and return a network diagram grouping the teams by that statistic.
 
 ``` r
-group_teams_by <- function(x) {
 # x is a statistic from the dataset inputted as a string
+group_teams_by <- function(x) {
   teams <- matrix(NA, nrow = 30, ncol = 2)
   teams[ , 1] <- data[ , 1]
   for (i in 1:30) {
@@ -301,13 +293,19 @@ group_teams_by <- function(x) {
   set.vertex.attribute(net, "division", division)
   set.vertex.attribute(net, "conference", conference)
   set.vertex.attribute(net, x, value)
-  ggnet2(net, label = TRUE, color = "division", palette = sample(colors, 1), size = x, size.cut = TRUE, shape = "conference", shape.palette = c("eastern conference" = 15, "western conference" = 17)) + ggtitle(paste("Teams grouped by", x, sep = " "))
+  ggnet2(net, label = TRUE,
+         color = "division", palette = sample(colors, 1),
+         size = x, size.cut = TRUE,
+         shape = "conference", shape.palette = c("eastern conference" = 15,
+                                                 "western conference" = 17)
+         ) + ggtitle(paste("Teams grouped by", x, sep = " "))
 }
 ```
 
 Now we can produce network diagrams that take in the other statistics.
 
 ``` r
+# show the available statistics
 colnames(data)
 ```
 
@@ -315,10 +313,6 @@ colnames(data)
     ##  [5] "points2"      "free_throws"  "points"       "off_rebounds"
     ##  [9] "def_rebounds" "assists"      "steals"       "blocks"      
     ## [13] "turnovers"    "fouls"        "efficiency"
-
-``` r
-# show the available statistics
-```
 
 ``` r
 group_teams_by("experience")
