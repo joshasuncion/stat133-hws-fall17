@@ -1,4 +1,4 @@
-# import necessary library
+# load required library
 library("stringr")
 
 # title: remove_missing
@@ -180,13 +180,14 @@ summary_stats <- function(x, na.rm = FALSE) {
 
 # title: print_stats
 # description: print list of summary statistics in nice format
-# arguments: list
-# output: formatted list
+# arguments: list of summary statistics
+# output: formatted lists
 print_stats <- function(x) {
-  str_c(str_pad(names(x), 9, "right"),
-        ":",
-        " ",
-        format(round(as.numeric(x), digits = 4), nsmall = 4)
+  print(str_c(str_pad(names(x), 9, "right"),
+              ":",
+              " ",
+              format(round(as.numeric(x), digits = 4), nsmall = 4)
+              )
         )
 }
 
@@ -203,12 +204,21 @@ rescale100 <- function(x, xmin, xmax) {
 # arguments: numeric vector
 # output: numeric vector
 drop_lowest <- function(x) {
-  x[x != get_minimum(x)]
+  len = length(x)
+  lowest = get_minimum(x)
+  for (i in 1:len) {
+    if (x[i] == lowest) {
+      x[i] = NA
+      x = remove_missing(x)
+      break
+    }
+  }
+  x
 }
 
 # title: score_homework
 # description: optionally drop lowest score in vector of homework scores
-# and find the average score
+#              and find the average score
 # arguments: numeric vector, drop
 # output: average value
 score_homework <- function(x, drop = FALSE) {
@@ -220,7 +230,7 @@ score_homework <- function(x, drop = FALSE) {
 
 # title: score_quiz
 # description: optionally drop lowest score in vector of quiz scores
-# and find the average score
+#              and find the average score
 # arguments: numeric vector, drop
 # output: average value
 score_quiz <- function(x, drop = FALSE) {

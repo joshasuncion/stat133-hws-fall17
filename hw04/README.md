@@ -21,3 +21,7 @@ runGitHub("stat133-hws-fall17", "joshasuncion", subdir = "hw04/app")
 - https://rdrr.io/cran/stringr/man/str_pad.html
 - http://uc-r.github.io/string_manipulation_stringR/
 - http://www.dummies.com/programming/r/how-to-format-numbers-in-r/
+- https://stackoverflow.com/questions/26828902/for-loop-in-r-not-working
+- http://www.cookbook-r.com/Strings/Creating_strings_from_variables/
+- http://rprogramming.net/write-csv-in-r/
+- https://stackoverflow.com/questions/16566799/change-variable-name-in-for-loop-using-r
