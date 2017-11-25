@@ -2,7 +2,7 @@
 
 The purpose of this assignment is threefold. First, to practice low level coding such as writing and testing functions. Second, to gain more experience with the Data Analysis Cycle and prepare data, perform data analysis and visualization, and report via interactive tools. Third, to learn R packages such as "testthat", "shiny", "ggvis", etc.
 
-The following code can be invoked in RStudio to run the shiny app.
+The following code can be invoked inside RStudio to run the shiny app.
 
 ```{r}
 library(shiny)
