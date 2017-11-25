@@ -18,8 +18,8 @@ freq <- table(Grade = scores$Grade)
 prop <- round(prop.table(freq), 2)
 grade_table <- data.frame(freq, Prop = as.numeric(prop))
 
-# create vector of each column excluding grade
-continuous <- colnames(scores)[1:22]
+# create vector of column names excluding X and Grade
+continuous <- colnames(scores)[2:23]
 
 # define UI for application
 ui <- fluidPage(
@@ -43,7 +43,7 @@ ui <- fluidPage(
                          sliderInput("bins", "Bin Width",
                                      min = 1,
                                      max = 10,
-                                     value = 1)),
+                                     value = 10)),
         
         # third tab
         conditionalPanel(condition = "input.tabselected==3",
@@ -54,14 +54,12 @@ ui <- fluidPage(
                          sliderInput("opacity", "Opacity",
                                      min = 0,
                                      max = 1,
-                                     value = 0.1)
-                         #radioButtons("line", h3("Show line"),
-                         #             list("none" = 1,
-                         #                  "lm" = 2,
-                         #                  "loess" = 3),
-                         #             selected = 1)
-                         )
-        ),
+                                     value = 0.5),
+                         radioButtons("line", "Show line",
+                                      list("none" = 1,
+                                           "lm" = 2,
+                                           "loess" = 3),
+                                      selected = 1))),
       
       # show outputs for each tab
       mainPanel(
@@ -127,16 +125,28 @@ server <- function(input, output) {
     print_stats(summary_stats(scores[ , hist_var]))
   })
   
-  # scatterplot (for third tab)
+  # scatterplot with optional line (for third tab)
   vis_scatterplot <- reactive({
     
     # convert input from string to symbol
     x_var <- prop("x", as.symbol(input$x_var))
     y_var <- prop("y", as.symbol(input$y_var))
     
-    scores %>%
-      ggvis(x = x_var, y = y_var, opacity = input$opacity) %>%
-      layer_points()
+    if (input$line == 2) {
+      scores %>%
+        ggvis(x = x_var, y = y_var, opacity := input$opacity) %>%
+        layer_points() %>%
+        layer_model_predictions(model = "lm", stroke := "#3b85ef")
+    } else if (input$line == 3) {
+      scores %>%
+        ggvis(x = x_var, y = y_var, opacity := input$opacity) %>%
+        layer_points() %>%
+        layer_model_predictions(model = "loess", stroke := "#3b85ef")
+    } else {
+      scores %>%
+        ggvis(x = x_var, y = y_var, opacity := input$opacity) %>%
+        layer_points()
+    }
   })
   vis_scatterplot %>% bind_shiny("scatterplot")
   
@@ -144,7 +154,7 @@ server <- function(input, output) {
   output$correlation <- renderPrint({
     x_var <- input$x_var
     y_var <- input$y_var
-    cor(x_var, y_var)
+    cat(cor(scores[ , x_var], scores[ , y_var]))
   })
 }
 
