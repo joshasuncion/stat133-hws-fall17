@@ -183,12 +183,11 @@ summary_stats <- function(x, na.rm = FALSE) {
 # arguments: list of summary statistics
 # output: formatted lists
 print_stats <- function(x) {
-  print(str_c(str_pad(names(x), 9, "right"),
-              ":",
-              " ",
-              format(round(as.numeric(x), digits = 4), nsmall = 4)
-              )
-        )
+  cat(str_c(str_pad(names(x), 9, "right"),
+            ":",
+            " ",
+            format(round(as.numeric(x), digits = 4), nsmall = 4)),
+      sep = "\n")
 }
 
 # title: rescale100
