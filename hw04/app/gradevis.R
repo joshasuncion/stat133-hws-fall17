@@ -2,100 +2,117 @@
 library("shiny")
 library("ggvis")
 
-#
+# source in functions
 source("../code/functions.R")
 
-#
+# read in "cleanscores.csv"
 scores <- read.csv("../data/cleandata/cleanscores.csv")
 
-#
+# convert letter grades to factors to order them
 scores$Grade <- factor(scores$Grade,
                        levels = c('A+', 'A', 'A-', 'B+', 'B', 'B-',
                                   'C+', 'C', 'C-', 'D', 'F'))
 
-#
+# create table of frequency and proportion of letter grades
 freq <- table(Grade = scores$Grade)
 prop <- round(prop.table(freq), 2)
 grade_table <- data.frame(freq, Prop = as.numeric(prop))
 
-#
+# create vector of each column excluding grade
 continuous <- colnames(scores)[1:22]
 
-# Define UI for application that draws a histogram
+# define UI for application
 ui <- fluidPage(
    
    # application title
    titlePanel("Grade Visualizer"),
    
-   # Sidebar with a slider input for number of bins 
+   # sidebar with conditional panels for multiple tabs
    sidebarLayout(
       sidebarPanel(
+        
+        # first tab
         conditionalPanel(condition = "input.tabselected==1",
                          h3("Grades Distribution"),
                          tableOutput("table")),
+        
+        # second tab
         conditionalPanel(condition = "input.tabselected==2",
                          selectInput("hist_var", "X-axis variable",
                                      continuous, selected = "HW1"),
                          sliderInput("bins", "Bin Width",
                                      min = 1,
                                      max = 10,
-                                     value = 1))
-        #conditionalPanel(condition = "input.tabselected==3",
-        #                 selectInput("var2", "X-axis variable",
-        #                             continuous, selected = "Test1"),
-        #                 selectInput("var3", "Y-axis varibale",
-        #                             continuous, selected = "Overall"),
-        #                 sliderInput("opacity", "Opacity",
-        #                             min = 0,
-        #                             max = 1,
-        #                             value = 0.1),
-        #                 radioButtons("line", h3("Show line"),
-        #                              list("none" = 1,
-        #                                   "lm" = 2,
-        #                                   "loess" = 3),
-        #                              selected = 1))
+                                     value = 1)),
+        
+        # third tab
+        conditionalPanel(condition = "input.tabselected==3",
+                         selectInput("x_var", "X-axis variable",
+                                     continuous, selected = "Test1"),
+                         selectInput("y_var", "Y-axis variable",
+                                     continuous, selected = "Overall"),
+                         sliderInput("opacity", "Opacity",
+                                     min = 0,
+                                     max = 1,
+                                     value = 0.1)
+                         #radioButtons("line", h3("Show line"),
+                         #             list("none" = 1,
+                         #                  "lm" = 2,
+                         #                  "loess" = 3),
+                         #             selected = 1)
+                         )
         ),
       
-      # Show a plot of the generated distribution
+      # show outputs for each tab
       mainPanel(
          tabsetPanel(type = "tabs",
+                     
+                     # first tab
                      tabPanel("Barchart", value = 1,
                               ggvisOutput("barchart")),
+                     
+                     # second tab
                      tabPanel("Histogram", value = 2,
                               ggvisOutput("histogram"),
                               
+                              # show text of summary statistics
                               h4("Summary Statistics"),
                               verbatimTextOutput("summary")),
                      
+                     # third tab
                      tabPanel("Scatterplot", value = 3,
-                              ggvisOutput("scatterplot")),
+                              ggvisOutput("scatterplot"),
+                              
+                              # show text of correlation
+                              h4("Correlation:"),
+                              verbatimTextOutput("correlation")),
+                     
                      id = "tabselected"))
       )
    )
 
-# Define server logic required to draw a histogram
+# define server logic
 server <- function(input, output) {
   
-  #
+  # barchart (for first tab)
   vis_barchart <- reactive({
     scores %>%
-      ggvis(x = ~Grade, fill := "#3b9bef") %>% 
+      ggvis(x = ~Grade, fill := "#3b9bef") %>%
       layer_bars(stroke := '#3b9bef', width = 0.9,
                  fillOpacity := 0.8, fillOpacity.hover := 1) %>%
       add_axis("y", title = "frequency")
   })
   vis_barchart %>% bind_shiny("barchart")
   
-  #
+  # grades distribution table (for first tab)
   output$table <- renderTable({
     grade_table
   })
   
-  # Histogram (for 2nd tab)
+  # histogram (for second tab)
   vis_histogram <- reactive({
     
-    # Normally we could do something like ggvis(x = ~mpg),
-    # but since the inputs are strings, we need to do a little more work.
+    # convert input from string to symbol
     hist_var <- prop("x", as.symbol(input$hist_var))
     
     scores %>% 
@@ -104,13 +121,32 @@ server <- function(input, output) {
   })
   vis_histogram %>% bind_shiny("histogram")
   
-  #
+  # summary statistics (for second tab)
   output$summary <- renderPrint({
     hist_var <- input$hist_var
     print_stats(summary_stats(scores[ , hist_var]))
   })
   
+  # scatterplot (for third tab)
+  vis_scatterplot <- reactive({
+    
+    # convert input from string to symbol
+    x_var <- prop("x", as.symbol(input$x_var))
+    y_var <- prop("y", as.symbol(input$y_var))
+    
+    scores %>%
+      ggvis(x = x_var, y = y_var, opacity = input$opacity) %>%
+      layer_points()
+  })
+  vis_scatterplot %>% bind_shiny("scatterplot")
+  
+  # correlation (for third tab)
+  output$correlation <- renderPrint({
+    x_var <- input$x_var
+    y_var <- input$y_var
+    cor(x_var, y_var)
+  })
 }
 
-# Run the application 
+# run the application 
 shinyApp(ui = ui, server = server)
