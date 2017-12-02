@@ -1,0 +1,56 @@
+---
+title: "Exploring Visualizations in Shiny"
+author: "Josh Asuncion"
+date: "November 28, 2017"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+## Introduction
+
+
+
+## Data Preparation
+
+```{r}
+require(devtools)
+install_github("lchiffon/wordcloud2")
+library("wordcloud2")
+```
+
+```{r}
+top_2012 <- read.csv("../data/top_songs_2012.csv")
+top_2013 <- read.csv("../data/top_songs_2013.csv")
+top_2014 <- read.csv("../data/top_songs_2014.csv")
+top_2015 <- read.csv("../data/top_songs_2015.csv")
+top_2016 <- read.csv("../data/top_songs_2016.csv")
+```
+
+```{r}
+install.packages("wordcloud")
+install.packages("RColorBrewer")
+library("wordcloud")
+library("RColorBrewer")
+```
+
+
+## References
+
+* https://shiny.rstudio.com/gallery/word-cloud.html
+* https://datavizcatalogue.com/methods/wordcloud.html
+* https://www.rdocumentation.org/packages/wordcloud/versions/2.5/topics/wordcloud
+* http://www.sthda.com/english/wiki/text-mining-and-word-cloud-fundamentals-in-r-5-simple-steps-you-should-know
+* https://stackoverflow.com/questions/27981651/text-wordcloud-plotting-error
+* https://stackoverflow.com/questions/6286313/remove-an-entire-column-from-a-data-frame-in-r
+* https://cran.r-project.org/web/packages/wordcloud2/vignettes/wordcloud.html
+* https://www.r-bloggers.com/the-wordcloud2-library/
+* https://shiny.rstudio.com/gallery/kmeans-example.html
+* https://www.statmethods.net/advstats/cluster.html
+* https://www.r-bloggers.com/k-means-clustering-in-r/
+* https://shiny.rstudio.com/gallery/plot-interaction-basic.html
+* https://www.math.ucla.edu/~anderson/rw1001/library/base/html/all.equal.html
+* https://stat.ethz.ch/pipermail/r-help/2010-May/239286.html
+* http://www.stat.columbia.edu/~tzheng/files/Rcolor.pdf

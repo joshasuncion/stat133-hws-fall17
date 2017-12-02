@@ -1,0 +1,12 @@
+name: song_visualizer
+title: Song Visualizer
+username:
+account: joshasuncion
+server: shinyapps.io
+hostUrl: https://api.shinyapps.io/v1
+appId: 242962
+bundleId: 1110361
+url: https://joshasuncion.shinyapps.io/song_visualizer/
+when: 1512206111.36228
+asMultiple: FALSE
+asStatic: FALSE
