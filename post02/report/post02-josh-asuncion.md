@@ -1,15 +1,10 @@
----
-title: "Word Clouds and K-Means Cluster Plots in Shiny"
-author: "Josh Asuncion"
-date: "November 28, 2017"
-output: github_document
----
+Word Clouds and K-Means Cluster Plots in Shiny
+================
+Josh Asuncion
+November 28, 2017
 
-```{r setup, include=FALSE}
-knitr::opts_chunk$set(echo = TRUE)
-```
-
-## Introduction
+Introduction
+------------
 
 ![](https://wordart.com/static/img/word_cloud.png)
 
@@ -35,19 +30,19 @@ The datasets I am working with are 5 csv files containing data about the top 100
 
 Spotify defines a list of audio features, and it gives each song uploaded a value for each of its features. The features in the datasets are:
 
-* danceability
-* energy
-* key
-* loudness
-* mode
-* speechiness
-* acousticness
-* instrumentalness
-* liveness
-* valence
-* tempo
-* duration_ms
-* time_signature
+-   danceability
+-   energy
+-   key
+-   loudness
+-   mode
+-   speechiness
+-   acousticness
+-   instrumentalness
+-   liveness
+-   valence
+-   tempo
+-   duration\_ms
+-   time\_signature
 
 Further description about these features can be found [here](https://developer.spotify.com/web-api/get-several-audio-features/). In addition, the datasets contain the song's name, the song's artist, and the song's Spotify ID.
 
@@ -57,7 +52,7 @@ This post uses two different wordcloud libraries. As I did research on how to cr
 
 This post goes over how to build the Shiny app and contains code that belong in a Shiny app file. To create and run the app, you will need to follow along with the code, which will be displayed here, in your own Shiny app file. However, the app produced through this post is published online and can be found at:
 
-* https://joshasuncion.shinyapps.io/song_visualizer/
+-   <https://joshasuncion.shinyapps.io/song_visualizer/>
 
 The app contains 3 tabs. The first tab uses version 1 of Wordcloud and gives you the ability to change the year, the measured feature, and the maximum number of songs plotted. The year determines which songs are plotted in the word cloud, the feature determines how large a song is plotted based on that song's feature value, and the maximum number of songs plotted determines how large the word cloud is.
 
@@ -65,13 +60,14 @@ The second tab uses version 2 of Wordcloud and is identical to the first tab exc
 
 The third tab contains the k-means cluster plot, where you are able to change the year, the X and Y variables, and the number of clusters. The year determines which songs are plotted, the variables determine which features are used for the plot, and the number of clusters determines how the data points are clustered together. In addition, a hover feature is added to the plot where you can hover over a point and see details of the song, artist, and features.
 
-## Shiny App Preparation
+Shiny App Preparation
+---------------------
 
 *Before the UI and server components in your Shiny app file, add the following code:*
 
 For Wordcloud, install the `wordcloud` package along with its dependency package `RColorBrewer`, and load the libraries.
 
-```r
+``` r
 install.packages("wordcloud")
 install.packages("RColorBrewer")
 library("wordcloud")
@@ -80,7 +76,7 @@ library("RColorBrewer")
 
 For Wordcloud2, `devtools` and `install_github()` are needed to install the `wordcloud2` package.
 
-```r
+``` r
 require(devtools)
 install_github("lchiffon/wordcloud2")
 library("wordcloud2")
@@ -88,13 +84,13 @@ library("wordcloud2")
 
 The k-means cluster plot uses functions that are native to R and doesn't need any packages to be loaded. However, to run the Shiny app, the `shiny` package will need to be loaded.
 
-```r
+``` r
 library("shiny")
 ```
 
 Download the csv files from the [GitHub repository](https://github.com/anatasiavela/Spot-the-Future/tree/master/data/cleandata) into a data folder inside your Shiny app folder, and read in the csv files as R objects.
 
-```{r}
+``` r
 top_2012 <- read.csv("../app/data/top_songs_2012.csv")
 top_2013 <- read.csv("../app/data/top_songs_2013.csv")
 top_2014 <- read.csv("../app/data/top_songs_2014.csv")
@@ -104,9 +100,28 @@ top_2016 <- read.csv("../app/data/top_songs_2016.csv")
 head(top_2016, n = 5)
 ```
 
+    ##            song                          artist                     id
+    ## 1 Love Yourself                   Justin Bieber 50kpGaPAhYJ3sGmk6vplg0
+    ## 2         Sorry                   Justin Bieber 09CtPGIpYB4BrO8qb1RGsF
+    ## 3     One Dance Drake featuring Wizkid and Kyla 1zi7xx7UVEFkmKfv06H8x0
+    ## 4          Work         Rihanna featuring Drake 32lmL4vQAAotg6MrJnhlQZ
+    ## 5  Stressed Out               Twenty One Pilots 3CRDbSIZ4r5MsZ0YwxuEkn
+    ##   danceability energy key loudness mode speechiness acousticness
+    ## 1        0.607  0.376   4   -9.954    1      0.4530      0.85600
+    ## 2        0.605  0.768   0   -3.724    0      0.0476      0.08650
+    ## 3        0.796  0.610   1   -5.857    1      0.0516      0.00842
+    ## 4        0.667  0.538  11   -6.294    1      0.0953      0.06440
+    ## 5        0.734  0.637   4   -5.677    0      0.1410      0.04620
+    ##   instrumentalness liveness valence   tempo duration_ms time_signature
+    ## 1         0.00e+00   0.2850   0.545 102.541      233720              4
+    ## 2         0.00e+00   0.3080   0.414 100.209      200787              4
+    ## 3         2.86e-03   0.3510   0.391 103.990      173987              4
+    ## 4         0.00e+00   0.0928   0.527  91.296      219320              4
+    ## 5         2.29e-05   0.0602   0.648 169.977      202333              4
+
 Remove the ID column, which is not necessary for the purposes of this post.
 
-```{r}
+``` r
 top_2012$id <- NULL
 top_2013$id <- NULL
 top_2014$id <- NULL
@@ -116,15 +131,21 @@ top_2016$id <- NULL
 
 Create vectors for the file names and the feature names, which will later be referred to in the Shiny app.
 
-```{r}
+``` r
 years <- c("2012", "2013", "2014", "2015", "2016")
 features <- colnames(top_2012)[3:15]
 features
 ```
 
+    ##  [1] "danceability"     "energy"           "key"             
+    ##  [4] "loudness"         "mode"             "speechiness"     
+    ##  [7] "acousticness"     "instrumentalness" "liveness"        
+    ## [10] "valence"          "tempo"            "duration_ms"     
+    ## [13] "time_signature"
+
 Create the function `rescale()`, which will later be necessary when formatting the data for the word clouds.
 
-```r
+``` r
 rescale <- function(x, xmin, xmax) {
   100 * (x - xmin) / (xmax - xmin)
 }
@@ -132,7 +153,7 @@ rescale <- function(x, xmin, xmax) {
 
 Create the function `get_data()`, which will later be necessary to link the year from `years`, which is chosen in the app, with the corresponding data frame.
 
-```r
+``` r
 get_data <- function(x) {
   if (x == "2012") {
     top_2012
@@ -148,13 +169,14 @@ get_data <- function(x) {
 }
 ```
 
-## UI Component
+UI Component
+------------
 
 *For the UI component of your Shiny app, add the following code:*
 
 To create 3 different tabs, conditional panels will be needed. Set up the structure of the UI component to take this into account.
 
-```r
+``` r
 # define UI for application
 ui <- fluidPage(
   
@@ -194,7 +216,7 @@ ui <- fluidPage(
 
 The first tab takes in year, feature, and max number as inputs. Add these to the first conditional panel. In addition, output the first word cloud (version 1 of Wordcloud) with `plotOutput()` in the first tab panel.
 
-```r
+``` r
 # first tab
 conditionalPanel(condition = "input.tabselected==1",
                  selectInput("year1", "Year:",
@@ -211,7 +233,7 @@ tabPanel("Word Cloud V1", value = 1,
 
 The second tab takes in year and feature as inputs. Add these to the second conditional panel. To output the second word cloud (version 2 of Wordcloud), you need to use `wordcloud2Output()` in the second tab panel.
 
-```r
+``` r
 # second tab
 conditionalPanel(condition = "input.tabselected==2",
                  selectInput("year2", "Year:",
@@ -225,7 +247,7 @@ tabPanel("Word Cloud V2", value = 2,
 
 The third tab takes in year, X variable, Y variable, and number of clusters as inputs. Add these to the third conditional panel. Use `plotOutput()` to output the cluster plot in the third tab panel. To enable the hover feature, give the argument `hover = hoverOpts(id = "plot_hover")` inside of `plotOutput()`. In addition, add a text output to the third tab panel using `verbatimTextOutput()` to hold the hover information.
 
-```r
+``` r
 # third tab
 conditionalPanel(condition = "input.tabselected==3",
                  selectInput("year3", "Year:",
@@ -249,13 +271,14 @@ tabPanel("K-Means Cluster Plot", value = 3,
          verbatimTextOutput("hover_info"))
 ```
 
-## Server Component
+Server Component
+----------------
 
 *For the server component of your Shiny app, add the following code:*
 
 Set up the structure of the server component to have 4 outputs. The first tab has `wordcloud1` as its output, and it uses `renderPlot()` to output the word cloud. The second tab has `wordcloud2` as its output, and it instead uses `renderWordcloud2()` to output the word cloud. The third tab has `kplot` and `hover_info` as outputs, using `renderPlot()` and `renderPrint()`.
 
-```r
+``` r
 # define server logic
 server <- function(input, output) {
   
@@ -277,7 +300,7 @@ server <- function(input, output) {
 
 To create the first word cloud, you need to use `get_data()` on the inputted year, which will be one of the years in `years`, to get the corresponding data frame. The inputted feature will need to be saved as well.
 
-```r
+``` r
 # plot word cloud in first tab
 output$wordcloud1 <- renderPlot({
   
@@ -296,7 +319,7 @@ Before plotting, some data formatting needs to be done. The `loudness` column in
 
 Each feature has its own scale. For instance, `loudness` ranges from -60 to 0 while `danceability` ranges from 0 to 1. To account for this, each column will need to be rescaled. Using a for loop, rescale each column with `rescale()` to range from 0 to 100.
 
-```r
+``` r
 # plot word cloud in first tab
 output$wordcloud1 <- renderPlot({
   
@@ -324,7 +347,7 @@ output$wordcloud1 <- renderPlot({
 
 Lastly, use `wordcloud()` to create the word cloud. It takes in a `words` argument, in which you will need to pass in the column of songs. For the `freq` argument, the column of the chosen feature will need to be passed in. Set `min.freq = 0` and set `max.words = input$max` to allow control over how many of the 100 songs are plotted.
 
-```r
+``` r
 # plot word cloud in first tab
 output$wordcloud1 <- renderPlot({
   
@@ -360,7 +383,7 @@ output$wordcloud1 <- renderPlot({
 
 Creating the second word cloud is largely the same as creating the first. Getting the year and feature and formatting the data will need to be done.
 
-```r
+``` r
 # plot word cloud in second tab
 output$wordcloud2 <- renderWordcloud2({
   
@@ -388,7 +411,7 @@ output$wordcloud2 <- renderWordcloud2({
 
 What's different is that `wordcloud2()` takes in a single data frame with one column of words and one column of frequencies. This data frame will need to be created with the songs of the chosen year and the values of the chosen feature. In addition, `wordcloud2()` does not allow you to change the maximum number of words, so that input is not necessary here. However, it does automatically add a hover feature, which allows you to view the frequency count of each song.
 
-```r
+``` r
 # plot word cloud in second tab
 output$wordcloud2 <- renderWordcloud2({
   
@@ -424,7 +447,7 @@ output$wordcloud2 <- renderWordcloud2({
 
 To create the cluster plot, you need to get the data of the inputted year with `get_data()`. With this data, choose the columns of the features inputted for the X and Y variables.
 
-```r
+``` r
 # plot k-means cluster plot in third tab
 output$kplot <- renderPlot({
   
@@ -439,7 +462,7 @@ output$kplot <- renderPlot({
 
 R has the built-in function `kmeans()`, which takes a data frame and finds out how to cluster the points in the data frame together depending upon the requested number of clusters. Use `kmeans()` on the data with `input$clusters` as the number of clusters, and assign this to `clusters`. In addition, use `palette()` to create a color scheme for the different clusters.
 
-```r
+``` r
 # plot k-means cluster plot in third tab
 output$kplot <- renderPlot({
   
@@ -464,7 +487,7 @@ The `clusters` object is a list with components such as `cluster`, `centers`, `t
 
 To plot the cluster points themselves, which are the centers of the clusters, use `points()` with `clusters$centers` as the points to plot. The `centers` component gives the location of the center for each cluster.
 
-```r
+``` r
 # plot k-means cluster plot in third tab
 output$kplot <- renderPlot({
   
@@ -491,7 +514,7 @@ output$kplot <- renderPlot({
 
 To add the hover feature, a new output is needed. In `output$hover_info`, get the point being hovered over. In addition, get the data of the chosen year with the columns of the X variable, Y variable, song, and artist.
 
-```r
+``` r
 # generate song info in third tab
 output$hover_info <- renderPrint({
   
@@ -511,7 +534,7 @@ Using a for loop, find the song in the data that is closest to the hovered point
 
 In the for loop, check if the X and Y points for each song are close enough to the X and Y points of the hovered point, and if a song is, assign `data` to contain only that song. In the case that no song is close enough to the hovered point, add a row containing `NA` values to the beginning of `data`.
 
-```r
+``` r
 # generate song info in third tab
 output$hover_info <- renderPrint({
   
@@ -544,7 +567,7 @@ output$hover_info <- renderPrint({
 
 Use `cat()` and `paste()` to output the song information. Use `data$song[1]` and `data$artist[1]` to retrieve the song and artist, and use `data[1, 1]` and `data[1, 2]` to retrieve the values of the chosen features. The reason for choosing the first row in `data` is to retrieve the `NA` row, in the case that the for loop failed to reassign `data` and `data` still contains all 100 songs.
 
-```r
+``` r
 # generate song info in third tab
 output$hover_info <- renderPrint({
   
@@ -583,12 +606,13 @@ output$hover_info <- renderPrint({
 
 Lastly, at the end of your Shiny app, be sure to call `shinyApp()` with `ui = ui` and `server = server`.
 
-```r
+``` r
 # run the application
 shinyApp(ui = ui, server = server)
 ```
 
-## Conclusion
+Conclusion
+----------
 
 R users have the ability to create all sorts of interesting and stimulating visualizations. Word clouds and k-means cluster plots are two types of visualizations that are very different from each other and achieve very different goals. However, the ability to create both in R shows a glimpse of what R is fully capable of. The interactive ability of Shiny only pushes that potential further.
 
@@ -596,18 +620,18 @@ R users have the ability to create all sorts of interesting and stimulating visu
 
 The following references were used for research on word clouds, k-means cluster plots, word cloud libraries, hover interaction, R Markdown, etc.
 
-* https://shiny.rstudio.com/gallery/word-cloud.html
-* https://datavizcatalogue.com/methods/wordcloud.html
-* https://www.rdocumentation.org/packages/wordcloud/versions/2.5/topics/wordcloud
-* http://www.sthda.com/english/wiki/text-mining-and-word-cloud-fundamentals-in-r-5-simple-steps-you-should-know
-* https://stackoverflow.com/questions/27981651/text-wordcloud-plotting-error
-* https://stackoverflow.com/questions/6286313/remove-an-entire-column-from-a-data-frame-in-r
-* https://cran.r-project.org/web/packages/wordcloud2/vignettes/wordcloud.html
-* https://www.r-bloggers.com/the-wordcloud2-library/
-* https://shiny.rstudio.com/gallery/kmeans-example.html
-* https://www.statmethods.net/advstats/cluster.html
-* https://www.r-bloggers.com/k-means-clustering-in-r/
-* https://shiny.rstudio.com/gallery/plot-interaction-basic.html
-* https://www.math.ucla.edu/~anderson/rw1001/library/base/html/all.equal.html
-* https://stat.ethz.ch/pipermail/r-help/2010-May/239286.html
-* http://www.stat.columbia.edu/~tzheng/files/Rcolor.pdf
+-   <https://shiny.rstudio.com/gallery/word-cloud.html>
+-   <https://datavizcatalogue.com/methods/wordcloud.html>
+-   <https://www.rdocumentation.org/packages/wordcloud/versions/2.5/topics/wordcloud>
+-   <http://www.sthda.com/english/wiki/text-mining-and-word-cloud-fundamentals-in-r-5-simple-steps-you-should-know>
+-   <https://stackoverflow.com/questions/27981651/text-wordcloud-plotting-error>
+-   <https://stackoverflow.com/questions/6286313/remove-an-entire-column-from-a-data-frame-in-r>
+-   <https://cran.r-project.org/web/packages/wordcloud2/vignettes/wordcloud.html>
+-   <https://www.r-bloggers.com/the-wordcloud2-library/>
+-   <https://shiny.rstudio.com/gallery/kmeans-example.html>
+-   <https://www.statmethods.net/advstats/cluster.html>
+-   <https://www.r-bloggers.com/k-means-clustering-in-r/>
+-   <https://shiny.rstudio.com/gallery/plot-interaction-basic.html>
+-   <https://www.math.ucla.edu/~anderson/rw1001/library/base/html/all.equal.html>
+-   <https://stat.ethz.ch/pipermail/r-help/2010-May/239286.html>
+-   <http://www.stat.columbia.edu/~tzheng/files/Rcolor.pdf>
